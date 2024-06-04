@@ -12,12 +12,12 @@ import java.util.Optional;
 public class MovieService {
 
     @Autowired
-    private MovieRepository movieRepository;
+    MovieRepository movieRepository;
 
     public List<Movie> getAllMovies() {
         return movieRepository.findAll();
     }
-
+    //optional ensures that if the id is null or absent then it still works
     public Optional<Movie> getMovieById(Long id) {
         return movieRepository.findById(id);
     }

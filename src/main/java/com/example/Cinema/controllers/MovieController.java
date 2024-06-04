@@ -3,6 +3,7 @@ package com.example.Cinema.controllers;
 import com.example.Cinema.models.Movie;
 import com.example.Cinema.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,15 +18,26 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping
-    public List<Movie> getAllMovies() {
-        return movieService.getAllMovies();
+    public ResponseEntity<List<Movie>> getAllMovies() {
+        List<Movie> movies;
+        movies = movieService.getAllMovies();
+        return new ResponseEntity<>(movies, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Movie> getMovieById(@PathVariable Long id){
+        Optional<Movie> movie = movieService.getMovieById(id);
+
+        if(movie.isPresent()) {
+            return new ResponseEntity<>(movie.get(), HttpStatus.OK);
+        }return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Movie updatedMovie) {
         try {
             Movie updated = movieService.updateMovie(id, updatedMovie);
-            return ResponseEntity.ok(updated);
+            return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -35,14 +47,15 @@ public class MovieController {
     public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
         try {
             movieService.deleteMovie(id);
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity(null, HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping
-    public Movie createMovie(@RequestBody Movie movie) {
-        return movieService.createMovie(movie);
+    public ResponseEntity<Movie> createMovie(@RequestBody Movie movie) {
+         movieService.createMovie(movie);
+        return new ResponseEntity<>(movie, HttpStatus.CREATED);
     }
 }

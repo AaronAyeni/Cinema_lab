@@ -1,18 +1,21 @@
 package com.example.Cinema.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "movies")//tells hibernate what to make a table with
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//primary key serial
     private Long id;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "rating")
     private String rating;
+
+    @Column(name = "duration")
     private int duration;
 
 
