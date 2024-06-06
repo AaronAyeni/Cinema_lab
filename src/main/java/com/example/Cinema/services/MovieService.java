@@ -5,6 +5,7 @@ import com.example.Cinema.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +45,18 @@ public class MovieService {
         } else {
             throw new RuntimeException("Movie not found with id " + id);
         }
+    }
+
+    public List<Movie> filterMoviesByDuration(int maxDuration) {
+        List<Movie> allMovies = movieRepository.findAll();
+        List<Movie> filteredMovies = new ArrayList<>();
+
+        for (Movie movie : allMovies) {
+            if (movie.getDuration() <= maxDuration) {
+                filteredMovies.add(movie);
+            }
+        }
+
+        return filteredMovies;
     }
 }

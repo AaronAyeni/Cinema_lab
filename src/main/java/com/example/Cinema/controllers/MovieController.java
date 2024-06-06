@@ -18,9 +18,13 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping
-    public ResponseEntity<List<Movie>> getAllMovies() {
+    public ResponseEntity<List<Movie>> getAllMovies(@RequestParam(required = false) Integer maxDuration) {
         List<Movie> movies;
-        movies = movieService.getAllMovies();
+        if (maxDuration == null){
+            movies = movieService.getAllMovies();
+        } else {
+            movies = movieService.filterMoviesByDuration(maxDuration);
+        }
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 
@@ -39,7 +43,7 @@ public class MovieController {
             Movie updated = movieService.updateMovie(id, updatedMovie);
             return new ResponseEntity<>(updatedMovie, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -49,7 +53,7 @@ public class MovieController {
             movieService.deleteMovie(id);
             return new ResponseEntity(null, HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
